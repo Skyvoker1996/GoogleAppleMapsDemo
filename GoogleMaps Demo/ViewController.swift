@@ -138,7 +138,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
             if let view = object as? CustomAnnotationView
             {
                 view.frame = CGRectMake(ASC.center.x, ASC.height, 0, 0)
-                UIView.animateWithDuration(3, delay: 0, options: .CurveEaseInOut, animations: {
+                UIView.animateWithDuration(1, delay: 0, options: .CurveLinear, animations: {
                     view.frame = CGRectMake(0, 0, ASC.width, ASC.height)
                     }, completion: nil)
                 print("Sender location is \(view.annotation?.coordinate)")

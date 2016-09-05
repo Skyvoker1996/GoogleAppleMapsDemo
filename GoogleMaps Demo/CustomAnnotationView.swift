@@ -64,7 +64,10 @@ class CustomAnnotationView: MKAnnotationView {
         
         let smallCirclePath = UIBezierPath(arcCenter:ASC.center, radius: ASC.width/4, startAngle: 0, endAngle: CGFloat(2 * M_PI), clockwise: true)
         UIColor(r: 130, g: 31, b: 14, alpha: 1.0).setFill()
+        UIColor.init(white: 0.5, alpha: 0.5).setStroke()
         smallCirclePath.fill()
+        smallCirclePath.stroke()
+        
     }
 }
 
