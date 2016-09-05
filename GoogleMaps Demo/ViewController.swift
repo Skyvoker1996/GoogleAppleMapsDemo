@@ -12,7 +12,6 @@ import MapKit
 
 
 class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
-
     
     let sydneyCoordinates = CLLocationCoordinate2DMake(-33.86, 151.20)
     
@@ -26,10 +25,6 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         marker.snippet = "Australia"
         marker.map = googleMapView
         
-        /*let pin = MKPointAnnotation()
-        pin.coordinate = sydneyCoordinates
-        pin.title = "Sydney"
-        pin.subtitle = "Australia"*/
         let pin = CustomAnnotation()
         pin.coordinate = sydneyCoordinates
         pin.title = "Sydney"
@@ -125,13 +120,31 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
     
+        
+        print("configureView")
         var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("CustomAnnotation") as? CustomAnnotationView
         
         if annotationView == nil{
             annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier:"CustomAnnotation")
+            annotationView?.addObserver(self, forKeyPath: "annotation", options: .New, context: nil)
         }
         return annotationView
     }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if keyPath == "annotation"{
+         print("Changed Location")
+            if let view = object as? CustomAnnotationView
+            {
+                view.frame = CGRectMake(ASC.center.x, ASC.height, 0, 0)
+                UIView.animateWithDuration(1, delay: 0, options: .CurveLinear, animations: {
+                    view.frame = CGRectMake(0, 0, ASC.width, ASC.height)
+                    }, completion: nil)
+                print("Sender location is \(view.annotation?.coordinate)")
+            }
+        }
+    }
+    
     
     func performSearchOfLocationWithQuery(query:String)
     {

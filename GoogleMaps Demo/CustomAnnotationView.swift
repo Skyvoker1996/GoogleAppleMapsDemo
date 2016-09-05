@@ -9,34 +9,23 @@
 import UIKit
 import MapKit
 
+
+// Annotation Shape Constants
+struct ASC {
+    static let height:CGFloat = width * 3
+    static let width:CGFloat = 20
+    static let center = CGPointMake(width/2, height/2)
+    static let bottomMiddlePoint = CGPointMake(center.x, height)
+    static var controlPoint1 = CGPointMake(0, (ASC.height / 4) * 3)
+    static let controlPoint2 = CGPointMake(center.x, (ASC.height / 8) * 5)
+}
+
 class CustomAnnotationView: MKAnnotationView {
-    
-    // Annotation Shape Constants
-    struct ASC {
-        static let height:CGFloat = width * 3
-        static let width:CGFloat = 20
-        static let center = CGPointMake(width/2, height/2)
-        static let bottomMiddlePoint = CGPointMake(center.x, height)
-        static var controlPoint1 = CGPointMake(0, (ASC.height / 4) * 3)
-        static let controlPoint2 = CGPointMake(center.x, (ASC.height / 8) * 5)
-    }
-    
-   /* func startAnimation()
-    {
-      let animation = CABasicAnimation(keyPath: "expand")
-      animation.duration = 3
-      animation.fromValue = UIBezierPath(rect: CGRectZero).CGPath
-      animation.toValue = UIBezierPath(rect: CGRectMake(0, 0, ASC.width, ASC.height)).CGPath
-      animation.fillMode = kCAFillModeForwards
-      animation.removedOnCompletion = false
-      layer.addAnimation(animation, forKey: nil)
-    }*/
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         print("init.annotation")
-        frame.size.width = ASC.width
-        frame.size.height = ASC.height
+        frame = CGRectMake(0, 0, ASC.width, ASC.height)
         backgroundColor = UIColor.clearColor()
         canShowCallout = true
         centerOffset = CGPointMake(0, -ASC.height / 2)
@@ -75,7 +64,10 @@ class CustomAnnotationView: MKAnnotationView {
         
         let smallCirclePath = UIBezierPath(arcCenter:ASC.center, radius: ASC.width/4, startAngle: 0, endAngle: CGFloat(2 * M_PI), clockwise: true)
         UIColor(r: 130, g: 31, b: 14, alpha: 1.0).setFill()
+        UIColor.init(white: 0.5, alpha: 0.5).setStroke()
         smallCirclePath.fill()
+        smallCirclePath.stroke()
+        
     }
 }
 
