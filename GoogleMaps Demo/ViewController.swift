@@ -12,7 +12,6 @@ import MapKit
 
 
 class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
-
     
     let sydneyCoordinates = CLLocationCoordinate2DMake(-33.86, 151.20)
     
