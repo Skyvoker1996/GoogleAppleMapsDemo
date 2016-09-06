@@ -111,10 +111,17 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        
         if textField.text != ""
         {
-            performSearchOfLocationWithQuery(textField.text!)
+            if textField.placeholder == "apple maps"
+            {
+                performSearchOfLocationWithQuery(textField.text!, forMaps: .AppleMaps)
+            }else {
+                performSearchOfLocationWithQuery(textField.text!, forMaps: .GoogleMaps)
+            }
         }
+        
         return true
     }
     
@@ -126,6 +133,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         
         if annotationView == nil{
             annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier:"CustomAnnotation")
+            //annotationView!.bounds = CGRectZero
             annotationView?.addObserver(self, forKeyPath: "annotation", options: .New, context: nil)
         }
         return annotationView
@@ -145,37 +153,58 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         }
     }
     
+    enum MapsType{
+        case AppleMaps
+        case GoogleMaps
+    }
     
-    func performSearchOfLocationWithQuery(query:String)
+    func performSearchOfLocationWithQuery(query:String, forMaps type: MapsType)
     {
-      let request = MKLocalSearchRequest()
-      request.naturalLanguageQuery = query
-        
-      MKLocalSearch(request: request).startWithCompletionHandler { [unowned self] (response, error) in
-        if error != nil {
-            print("Can't find location, reason: \(error?.description)")
-            return
-        }
-        
-        if response != nil {
+        switch type{
+        case .AppleMaps:
+            let request = MKLocalSearchRequest()
+            request.naturalLanguageQuery = query
             
-            self.appleMapView.removeAnnotations(self.appleMapView.annotations)
-            
-            var annotations = [MKAnnotation]()
-            
-            for item in response!.mapItems
-            {
-                annotations.append(item.placemark)
+            MKLocalSearch(request: request).startWithCompletionHandler { [unowned self] (response, error) in
+                if error != nil {
+                    print("Can't find location, reason: \(error?.description)")
+                    return
+                }
+                
+                if response != nil {
+                    
+                    self.appleMapView.removeAnnotations(self.appleMapView.annotations)
+                    
+                    var annotations = [MKAnnotation]()
+                    
+                    for item in response!.mapItems
+                    {
+                        annotations.append(item.placemark)
+                    }
+                    
+                    if annotations.count == 1{
+                        self.appleMapView.addAnnotations(annotations)
+                        self.appleMapView.region = MKCoordinateRegionMake(annotations.first!.coordinate, MKCoordinateSpanMake(0.5, 0.5))
+                    }else {
+                        self.appleMapView.showAnnotations(annotations, animated: true)
+                    }
+                }
             }
-            
-            if annotations.count == 1{
-                self.appleMapView.addAnnotations(annotations)
-                self.appleMapView.region = MKCoordinateRegionMake(annotations.first!.coordinate, MKCoordinateSpanMake(0.5, 0.5))
-            }else {
-                self.appleMapView.showAnnotations(annotations, animated: true)
+        case .GoogleMaps:
+            AddressLocation.fetchLocationForAddress(query) { [unowned self] (addressLocations) in
+                for addressLocation in addressLocations{
+                    if let location = addressLocation.geometry?.location {
+                        self.googleMapView.clear()
+                        let position = CLLocationCoordinate2DMake(Double(location.lat!), Double(location.lng!))
+                        let marker = GMSMarker(position: position)
+                        marker.title = "New Location"
+                        marker.map = self.googleMapView
+                        self.googleMapView.animateToLocation(position)
+                    }
+                }
             }
         }
-      }
+      
     
     }
 }
