@@ -28,8 +28,13 @@ class AddressLocation: NSObject {
         }
     }
     
-    static func fetchLocationForAddress(address: NSString){
-        let url = NSURL(string:"https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA")
+    static func fetchLocationForAddress(address: String, completitionHandler : ([AddressLocation]) -> ()){
+        
+        let testString = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA"
+        let fullAddress : NSString! = address.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.letterCharacterSet())
+       
+        let url = NSURL(string: "https://maps.googleapis.com/maps/api/geocode/json?address=\(fullAddress)&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA")
+        
         NSURLSession.sharedSession().dataTaskWithURL(url!) { (data, response, error) in
             
             if error != nil {
@@ -37,16 +42,20 @@ class AddressLocation: NSObject {
                 return
             }
             do {
-                    let json = try (NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers))
+                let json = try (NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers))
                 
-                    var addressLocations = [AddressLocation]()
+                var addressLocations = [AddressLocation]()
                 
-                    for dict in json["results"] as! [[String:AnyObject]]{
+                for dict in json["results"] as! [[String:AnyObject]]{
                          let addressLocation = AddressLocation()
-                         print(dict)
                          addressLocation.setValuesForKeysWithDictionary(dict)
                          addressLocations.append(addressLocation)
                     }
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    completitionHandler(addressLocations)
+                })
+                
                 }catch let err {
                     print(err)
                 }

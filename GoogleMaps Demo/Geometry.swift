@@ -20,6 +20,7 @@ class Geometry: NSObject {
         }else{ super.setValue(value, forKey: key) }
     }
     
+    var bounds : AnyObject?
     var location: Location?
     var viewport : AnyObject?
     var location_type: String?
