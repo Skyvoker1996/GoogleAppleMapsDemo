@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import GoogleMaps
+import GooglePlaces
 
 class AddressLocation: NSObject {
     
@@ -15,6 +17,7 @@ class AddressLocation: NSObject {
     var place_id: String?
     var types: [AnyObject]?
     var address_components: [AnyObject]?
+    var partial_match: AnyObject?
     
     override func setValue(value: AnyObject?, forKey key: String) {
         if key == "geometry" {
@@ -28,12 +31,12 @@ class AddressLocation: NSObject {
         }
     }
     
-    static func fetchLocationForAddress(address: String, completitionHandler : ([AddressLocation]) -> ()){
+    static func fetchLocationForAddress(address: String, language: String, completitionHandler : ([AddressLocation]) -> ()){
         
-        let testString = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA"
+        //let testString = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA"
         let fullAddress : NSString! = address.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.letterCharacterSet())
-       
-        let url = NSURL(string: "https://maps.googleapis.com/maps/api/geocode/json?address=\(fullAddress)&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA")
+    
+        let url = NSURL(string: "https://maps.googleapis.com/maps/api/geocode/json?address=\(fullAddress)&language=\(language)&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA")
         
         NSURLSession.sharedSession().dataTaskWithURL(url!) { (data, response, error) in
             
@@ -45,7 +48,7 @@ class AddressLocation: NSObject {
                 let json = try (NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers))
                 
                 var addressLocations = [AddressLocation]()
-                
+        
                 for dict in json["results"] as! [[String:AnyObject]]{
                          let addressLocation = AddressLocation()
                          addressLocation.setValuesForKeysWithDictionary(dict)
