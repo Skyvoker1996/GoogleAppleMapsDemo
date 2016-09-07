@@ -18,7 +18,7 @@ class SearchResultTableViewController: UITableViewController {
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.separatorStyle = .None
         view.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor.clearColor()
+        tableView.backgroundColor = UIColor.greenColor()
         tableView.bounces = false
 
         
@@ -29,6 +29,7 @@ class SearchResultTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
+    var array = Array(0...4)
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -43,7 +44,7 @@ class SearchResultTableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 5
+        return array.count
     }
 
     
@@ -70,6 +71,16 @@ class SearchResultTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         SearchResultTableViewController.completeSearchHandler?(address: tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.text)
+        array.removeRange(1...3)
+        tableView.reloadData()
+        for const in tableView.constraints
+        {
+            if const.firstAttribute == NSLayoutAttribute.Height
+            {
+              tableView.removeConstraint(const)
+            }
+        }
+        tableView.heightAnchor.constraintEqualToConstant(tableView.contentSize.height).active = true
     }
     
     /*

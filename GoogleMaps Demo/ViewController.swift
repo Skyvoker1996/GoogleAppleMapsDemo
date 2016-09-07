@@ -130,7 +130,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
             let center = searchLocationGoogleTextField.center
             
             let containerView = UIView(frame:CGRectMake(center.x,center.y + halfHeight,0,0))
-            containerView.backgroundColor = UIColor.clearColor()
+            containerView.backgroundColor = UIColor.whiteColor()
             containerView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(containerView)
             containerView.layer.cornerRadius = 10
@@ -139,24 +139,25 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
             NSLayoutConstraint.activateConstraints([
                 containerView.topAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.bottomAnchor),
                 containerView.leftAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.leftAnchor),
-                containerView.widthAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.widthAnchor),
-                containerView.heightAnchor.constraintEqualToConstant(150) ])
+                containerView.widthAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.widthAnchor)])
+            
+            addChildViewController(searchResultVC)
+            
+            containerView.addSubview(searchResultVC.view)
+
+            NSLayoutConstraint.activateConstraints([
+                searchResultVC.tableView.leadingAnchor.constraintEqualToAnchor(containerView.leadingAnchor),
+                searchResultVC.tableView.trailingAnchor.constraintEqualToAnchor(containerView.trailingAnchor),
+                searchResultVC.tableView.topAnchor.constraintEqualToAnchor(containerView.topAnchor),
+                searchResultVC.tableView.heightAnchor.constraintEqualToConstant(searchResultVC.tableView.contentSize.height),
+                containerView.heightAnchor.constraintEqualToAnchor(searchResultVC.tableView.heightAnchor)
+                ])
             
             UIView.animateWithDuration(0.3, animations: {
                 containerView.setNeedsUpdateConstraints()
                 containerView.setNeedsLayout()
                 containerView.layoutIfNeeded()
             })
-            
-            addChildViewController(searchResultVC)
-            
-            containerView.addSubview(searchResultVC.view)
-            
-            NSLayoutConstraint.activateConstraints([
-                searchResultVC.view.leadingAnchor.constraintEqualToAnchor(containerView.leadingAnchor),
-                searchResultVC.view.trailingAnchor.constraintEqualToAnchor(containerView.trailingAnchor),
-                searchResultVC.view.topAnchor.constraintEqualToAnchor(containerView.topAnchor),
-                searchResultVC.view.bottomAnchor.constraintEqualToAnchor(containerView.bottomAnchor) ])
             
             searchResultVC.didMoveToParentViewController(self)
             
