@@ -5,6 +5,8 @@ platform :ios, '9.0'
 target 'GoogleMaps Demo' do
   # Comment this line if you're not using Swift and don't want to use dynamic frameworks
   use_frameworks!
+  pod 'GooglePlaces'
+  pod 'GooglePlacePicker'
   pod 'GoogleMaps' 
   # Pods for GoogleMaps Demo
 

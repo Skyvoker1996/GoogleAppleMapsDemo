@@ -13,6 +13,17 @@ import MapKit
 
 class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
+    struct TextFieldIdentifiers {
+        static let appleSearchTextField = "apple search"
+        static let googleSearchTextField = "google search"
+    }
+    
+    var searchResultVC : SearchResultTableViewController = {
+        let mvc = SearchResultTableViewController()
+        //mvc.tableView.contentSize = CGSizeMake(100, 200)
+        return mvc
+    }()
+    
     let sydneyCoordinates = CLLocationCoordinate2DMake(-33.86, 151.20)
     
     override func viewDidLoad() {
@@ -44,23 +55,24 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
     func configureConstraints()
     {
-        searchLocationAppleTextField.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 50).active = true
-        searchLocationAppleTextField.leftAnchor.constraintEqualToAnchor(view.centerXAnchor, constant:50 ).active = true
-        searchLocationAppleTextField.widthAnchor.constraintEqualToConstant(200).active = true
-        
-        searchLocationGoogleTextField.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 50).active = true
-        searchLocationGoogleTextField.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 50).active = true
-        searchLocationGoogleTextField.widthAnchor.constraintEqualToConstant(200).active = true
-        
-        appleMapView.leftAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        appleMapView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-        appleMapView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-        appleMapView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-        
-        googleMapView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        googleMapView.rightAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        googleMapView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-        googleMapView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+        NSLayoutConstraint.activateConstraints([
+            searchLocationAppleTextField.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 50),
+            searchLocationAppleTextField.leftAnchor.constraintEqualToAnchor(view.centerXAnchor, constant:50 ),
+            searchLocationAppleTextField.widthAnchor.constraintEqualToConstant(200),
+            
+            searchLocationGoogleTextField.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 50),
+            searchLocationGoogleTextField.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 50),
+            searchLocationGoogleTextField.widthAnchor.constraintEqualToConstant(200),
+            
+            appleMapView.leftAnchor.constraintEqualToAnchor(view.centerXAnchor),
+            appleMapView.rightAnchor.constraintEqualToAnchor(view.rightAnchor),
+            appleMapView.topAnchor.constraintEqualToAnchor(view.topAnchor),
+            appleMapView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor),
+            
+            googleMapView.leftAnchor.constraintEqualToAnchor(view.leftAnchor),
+            googleMapView.rightAnchor.constraintEqualToAnchor(view.centerXAnchor),
+            googleMapView.topAnchor.constraintEqualToAnchor(view.topAnchor),
+            googleMapView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor)])
     }
     
     let googleMapView:GMSMapView = {
@@ -85,6 +97,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     lazy var searchLocationAppleTextField: UITextField = {
         let searchField = UITextField()
         searchField.translatesAutoresizingMaskIntoConstraints = false
+        searchField.accessibilityIdentifier = TextFieldIdentifiers.appleSearchTextField
         searchField.placeholder = "apple maps"
         searchField.textAlignment = .Natural
         searchField.delegate = self
@@ -95,6 +108,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
     lazy var searchLocationGoogleTextField: UITextField = {
         let searchField = UITextField()
+        searchField.accessibilityIdentifier = TextFieldIdentifiers.googleSearchTextField
         searchField.translatesAutoresizingMaskIntoConstraints = false
         searchField.placeholder = "google maps"
         searchField.textAlignment = .Natural
@@ -108,18 +122,56 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        if textField.accessibilityIdentifier == TextFieldIdentifiers.googleSearchTextField
+        {
+            
+            let containerView = UIView()
+            containerView.backgroundColor = UIColor.clearColor()
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(containerView)
+            containerView.layer.cornerRadius = 5
+            containerView.clipsToBounds = true
+            
+            NSLayoutConstraint.activateConstraints([
+                containerView.topAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.bottomAnchor),
+                containerView.leftAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.leftAnchor),
+                containerView.widthAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.widthAnchor),
+                containerView.heightAnchor.constraintEqualToConstant(150) ])
+            
+            addChildViewController(searchResultVC)
+            containerView.addSubview(searchResultVC.view)
+            
+            NSLayoutConstraint.activateConstraints([
+                searchResultVC.view.leadingAnchor.constraintEqualToAnchor(containerView.leadingAnchor),
+                searchResultVC.view.trailingAnchor.constraintEqualToAnchor(containerView.trailingAnchor),
+                searchResultVC.view.topAnchor.constraintEqualToAnchor(containerView.topAnchor),
+                searchResultVC.view.bottomAnchor.constraintEqualToAnchor(containerView.bottomAnchor) ])
+            
+            searchResultVC.didMoveToParentViewController(self)
+            
+            print("Started editing")
+        }
+    }
+    
+    func textField(textField: UITextField,
+                     shouldChangeCharactersInRange range: NSRange,
+                                                   replacementString string: String) -> Bool{
+        print("did shanged charchters in text field")
+     
+        return true
+    }
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        
+        let currentLanguage = (textField.textInputMode?.primaryLanguage)
         if textField.text != ""
         {
-            if textField.placeholder == "apple maps"
-            {
-                performSearchOfLocationWithQuery(textField.text!, forMaps: .AppleMaps)
-            }else {
-                performSearchOfLocationWithQuery(textField.text!, forMaps: .GoogleMaps)
-            }
+            textField.accessibilityIdentifier == TextFieldIdentifiers.appleSearchTextField ?
+                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .AppleMaps) :
+                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .GoogleMaps)
         }
         
         return true
@@ -158,7 +210,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         case GoogleMaps
     }
     
-    func performSearchOfLocationWithQuery(query:String, forMaps type: MapsType)
+    func performSearchOfLocationWithQuery(query:String, language: String, forMaps type: MapsType)
     {
         switch type{
         case .AppleMaps:
@@ -191,7 +243,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
                 }
             }
         case .GoogleMaps:
-            AddressLocation.fetchLocationForAddress(query) { [unowned self] (addressLocations) in
+            AddressLocation.fetchLocationForAddress(query, language: language) { [unowned self] (addressLocations) in
                 for addressLocation in addressLocations{
                     if let location = addressLocation.geometry?.location {
                         self.googleMapView.clear()
