@@ -10,6 +10,8 @@ import UIKit
 
 class SearchResultTableViewController: UITableViewController {
     
+    static var completeSearchHandler: ((address:String?)->())?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -48,10 +50,8 @@ class SearchResultTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cellIdentifier", forIndexPath: indexPath)
         
-        cell.backgroundColor = UIColor.clearColor()
-        cell.selectionStyle = .None
+        cell.backgroundColor = UIColor(white:0.7 ,alpha:0.6)
         cell.textLabel?.text = "some text"
-        // Configure the cell...
 
         return cell
     }
@@ -67,9 +67,11 @@ class SearchResultTableViewController: UITableViewController {
         return true
     }
     */
-//    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        self.dismissViewControllerAnimated(true, completion: nil)
-//    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        SearchResultTableViewController.completeSearchHandler?(address: tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.text)
+    }
+    
     /*
     // Override to support editing the table view.
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {

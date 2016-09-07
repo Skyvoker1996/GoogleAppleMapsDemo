@@ -123,16 +123,17 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    
     func textFieldDidBeginEditing(textField: UITextField) {
         if textField.accessibilityIdentifier == TextFieldIdentifiers.googleSearchTextField
         {
+            let halfHeight = searchLocationGoogleTextField.frame.size.height / 2
+            let center = searchLocationGoogleTextField.center
             
-            let containerView = UIView()
+            let containerView = UIView(frame:CGRectMake(center.x,center.y + halfHeight,0,0))
             containerView.backgroundColor = UIColor.clearColor()
             containerView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(containerView)
-            containerView.layer.cornerRadius = 5
+            containerView.layer.cornerRadius = 10
             containerView.clipsToBounds = true
             
             NSLayoutConstraint.activateConstraints([
@@ -141,7 +142,14 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
                 containerView.widthAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.widthAnchor),
                 containerView.heightAnchor.constraintEqualToConstant(150) ])
             
+            UIView.animateWithDuration(0.3, animations: {
+                containerView.setNeedsUpdateConstraints()
+                containerView.setNeedsLayout()
+                containerView.layoutIfNeeded()
+            })
+            
             addChildViewController(searchResultVC)
+            
             containerView.addSubview(searchResultVC.view)
             
             NSLayoutConstraint.activateConstraints([
@@ -171,7 +179,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         {
             textField.accessibilityIdentifier == TextFieldIdentifiers.appleSearchTextField ?
                 performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .AppleMaps) :
-                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .GoogleMaps)
+                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .GoogleMaps)    
         }
         
         return true
