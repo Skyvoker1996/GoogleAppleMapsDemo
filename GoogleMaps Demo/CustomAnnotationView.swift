@@ -44,7 +44,6 @@ class CustomAnnotationView: MKAnnotationView {
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     override func drawRect(rect: CGRect) {
-        print("Draw rect")
         let context = UIGraphicsGetCurrentContext()
         
         let leftSidePath = UIBezierPath(arcCenter: ASC.center, radius: ASC.width/2, startAngle: CGFloat(-M_PI_2), endAngle: CGFloat(M_PI), clockwise: false)

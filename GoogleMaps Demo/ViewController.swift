@@ -23,14 +23,6 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         mvc.completionHandler = { [unowned self] (address) in
             self.searchLocationGoogleTextField.text = address
             self.textFieldShouldReturn(self.searchLocationGoogleTextField)
-            mvc.willMoveToParentViewController(nil)
-            mvc.view.removeFromSuperview()
-            mvc.removeFromParentViewController()
-            UIView.animateWithDuration(0.3, animations: {
-                self.containerView.frame = self.containerViewRect
-                }, completion: { (value) in
-                    self.containerView.removeFromSuperview()
-            })
         }
         return mvc
     }()
@@ -50,6 +42,18 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         view.clipsToBounds = true
         return view
     }()
+    
+    func dismissAutocompletitionView()
+    {
+        searchResultVC.willMoveToParentViewController(nil)
+        searchResultVC.view.removeFromSuperview()
+        searchResultVC.removeFromParentViewController()
+        UIView.animateWithDuration(0.3, animations: {
+            self.containerView.frame = self.containerViewRect
+            }, completion: { (value) in
+                self.containerView.removeFromSuperview()
+        })
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -151,12 +155,10 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     func textFieldDidBeginEditing(textField: UITextField) {
         if textField.accessibilityIdentifier == TextFieldIdentifiers.googleSearchTextField
         {
-            
-            
             view.addSubview(containerView)
             
             NSLayoutConstraint.activateConstraints([
-                containerView.topAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.bottomAnchor),
+                containerView.topAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.bottomAnchor, constant: 5),
                 containerView.leftAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.leftAnchor),
                 containerView.widthAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.widthAnchor)])
             
@@ -198,23 +200,22 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         let currentLanguage = (textField.textInputMode?.primaryLanguage)
         if textField.text != ""
         {
-            textField.accessibilityIdentifier == TextFieldIdentifiers.appleSearchTextField ?
-                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .AppleMaps) :
-                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .GoogleMaps)    
+            if textField.accessibilityIdentifier == TextFieldIdentifiers.appleSearchTextField {
+                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .AppleMaps) }else {
+                performSearchOfLocationWithQuery(textField.text!,language: currentLanguage!, forMaps: .GoogleMaps)
+                dismissAutocompletitionView()
+            }
         }
         
         return true
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-    
         
-        print("configureView")
         var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("CustomAnnotation") as? CustomAnnotationView
         
         if annotationView == nil{
             annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier:"CustomAnnotation")
-            //annotationView!.bounds = CGRectZero
             annotationView?.addObserver(self, forKeyPath: "annotation", options: .New, context: nil)
         }
         return annotationView
@@ -229,7 +230,6 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
                 UIView.animateWithDuration(1, delay: 0, options: .CurveLinear, animations: {
                     view.frame = CGRectMake(0, 0, ASC.width, ASC.height)
                     }, completion: nil)
-                print("Sender location is \(view.annotation?.coordinate)")
             }
         }
     }
