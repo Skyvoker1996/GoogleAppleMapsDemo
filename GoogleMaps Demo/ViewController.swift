@@ -18,13 +18,38 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         static let googleSearchTextField = "google search"
     }
     
-    var searchResultVC : SearchResultTableViewController = {
+    lazy var searchResultVC : SearchResultTableViewController = {
         let mvc = SearchResultTableViewController()
-        //mvc.tableView.contentSize = CGSizeMake(100, 200)
+        mvc.completionHandler = { [unowned self] (address) in
+            self.searchLocationGoogleTextField.text = address
+            self.textFieldShouldReturn(self.searchLocationGoogleTextField)
+            mvc.willMoveToParentViewController(nil)
+            mvc.view.removeFromSuperview()
+            mvc.removeFromParentViewController()
+            UIView.animateWithDuration(0.3, animations: {
+                self.containerView.frame = self.containerViewRect
+                }, completion: { (value) in
+                    self.containerView.removeFromSuperview()
+            })
+        }
         return mvc
     }()
     
     let sydneyCoordinates = CLLocationCoordinate2DMake(-33.86, 151.20)
+    
+    lazy var containerViewRect:CGRect = { [unowned self] in
+        let halfHeight = self.searchLocationGoogleTextField.frame.size.height / 2
+        let center = self.searchLocationGoogleTextField.center
+        return CGRectMake(center.x,center.y + halfHeight,0,0)}()
+    
+    lazy var containerView:UIView = { [unowned self] in
+        let view = UIView(frame:self.containerViewRect)
+        view.backgroundColor = UIColor.clearColor()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 10
+        view.clipsToBounds = true
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,11 +83,11 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         NSLayoutConstraint.activateConstraints([
             searchLocationAppleTextField.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 50),
             searchLocationAppleTextField.leftAnchor.constraintEqualToAnchor(view.centerXAnchor, constant:50 ),
-            searchLocationAppleTextField.widthAnchor.constraintEqualToConstant(200),
+            searchLocationAppleTextField.widthAnchor.constraintEqualToConstant(300),
             
             searchLocationGoogleTextField.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 50),
             searchLocationGoogleTextField.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 50),
-            searchLocationGoogleTextField.widthAnchor.constraintEqualToConstant(200),
+            searchLocationGoogleTextField.widthAnchor.constraintEqualToConstant(300),
             
             appleMapView.leftAnchor.constraintEqualToAnchor(view.centerXAnchor),
             appleMapView.rightAnchor.constraintEqualToAnchor(view.rightAnchor),
@@ -76,7 +101,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     }
     
     let googleMapView:GMSMapView = {
-        GMSServices.provideAPIKey("AIzaSyCEA1lfK8eDwtbTjW22MDDMe3e-0-itjKc")
+        GMSServices.provideAPIKey("AIzaSyCEA1lfK8eDwtbTjW22MDDMe3e-0-itjKc") //AIzaSyCEA1lfK8eDwtbTjW22MDDMe3e-0-itjKc
         let camera = GMSCameraPosition.cameraWithLatitude(-33.86,longitude: 151.20, zoom: 6)
         let map = GMSMapView.mapWithFrame(CGRectZero, camera: camera)
         map.mapType = kGMSTypeHybrid
@@ -126,15 +151,9 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     func textFieldDidBeginEditing(textField: UITextField) {
         if textField.accessibilityIdentifier == TextFieldIdentifiers.googleSearchTextField
         {
-            let halfHeight = searchLocationGoogleTextField.frame.size.height / 2
-            let center = searchLocationGoogleTextField.center
             
-            let containerView = UIView(frame:CGRectMake(center.x,center.y + halfHeight,0,0))
-            containerView.backgroundColor = UIColor.whiteColor()
-            containerView.translatesAutoresizingMaskIntoConstraints = false
+            
             view.addSubview(containerView)
-            containerView.layer.cornerRadius = 10
-            containerView.clipsToBounds = true
             
             NSLayoutConstraint.activateConstraints([
                 containerView.topAnchor.constraintEqualToAnchor(searchLocationGoogleTextField.bottomAnchor),
@@ -153,10 +172,10 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
                 containerView.heightAnchor.constraintEqualToAnchor(searchResultVC.tableView.heightAnchor)
                 ])
             
-            UIView.animateWithDuration(0.3, animations: {
-                containerView.setNeedsUpdateConstraints()
-                containerView.setNeedsLayout()
-                containerView.layoutIfNeeded()
+            UIView.animateWithDuration(0.3, animations: { [unowned self] in
+                self.containerView.setNeedsUpdateConstraints()
+                self.containerView.setNeedsLayout()
+                self.containerView.layoutIfNeeded()
             })
             
             searchResultVC.didMoveToParentViewController(self)
@@ -168,8 +187,9 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     func textField(textField: UITextField,
                      shouldChangeCharactersInRange range: NSRange,
                                                    replacementString string: String) -> Bool{
-        print("did change charchters in a text field")
-     
+        if textField.text != "" {
+            searchResultVC.fetchSuggestions(textField.text!)
+        }
         return true
     }
 

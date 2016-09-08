@@ -33,11 +33,10 @@ class AddressLocation: NSObject {
     
     static func fetchLocationForAddress(address: String, language: String, completitionHandler : ([AddressLocation]) -> ()){
         
-        //let testString = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA"
         let fullAddress : NSString! = address.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.letterCharacterSet())
     
-        let url = NSURL(string: "https://maps.googleapis.com/maps/api/geocode/json?address=\(fullAddress)&language=\(language)&key=AIzaSyBrFyzghYT5RnslRHs1K8T4qFOF1t11lTA")
-        
+        let url = NSURL(string: "https://maps.googleapis.com/maps/api/geocode/json?address=\(fullAddress)&language=\(language)&key=AIzaSyCvHGdB5rl0v9zIhMUdjhHoJrSv41g2sZA")
+
         NSURLSession.sharedSession().dataTaskWithURL(url!) { (data, response, error) in
             
             if error != nil {
