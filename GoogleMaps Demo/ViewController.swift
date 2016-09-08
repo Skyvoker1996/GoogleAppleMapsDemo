@@ -168,7 +168,7 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     func textField(textField: UITextField,
                      shouldChangeCharactersInRange range: NSRange,
                                                    replacementString string: String) -> Bool{
-        print("did shanged charchters in text field")
+        print("did change charchters in a text field")
      
         return true
     }
