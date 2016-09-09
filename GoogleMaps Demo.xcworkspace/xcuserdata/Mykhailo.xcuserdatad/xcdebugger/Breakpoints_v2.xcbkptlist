@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GoogleMaps Demo/SearchResultTableViewController.swift"
-            timestampString = "495032350.539289"
+            timestampString = "495098771.868114"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "fetchSuggestions(_:)"
             landmarkType = "5">
          </BreakpointContent>

@@ -153,6 +153,11 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {
+        
+        if textField.text != ""{
+          textField.selectedTextRange = textField.textRangeFromPosition(textField.beginningOfDocument, toPosition: textField.endOfDocument)
+        }
+        
         if textField.accessibilityIdentifier == TextFieldIdentifiers.googleSearchTextField
         {
             view.addSubview(containerView)
@@ -186,9 +191,12 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
         }
     }
     
-    func textField(textField: UITextField,
-                     shouldChangeCharactersInRange range: NSRange,
-                                                   replacementString string: String) -> Bool{
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool{
+        
+        print("\(range.location), \(range.length)")
+       // var query = textField.text?.replaceRange(0...1, with: string) modify this line of code
+        print(textField.text)
+        print(string)
         if textField.text != "" {
             searchResultVC.fetchSuggestions(textField.text!)
         }
