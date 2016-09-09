@@ -193,13 +193,20 @@ class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool{
         
-        print("\(range.location), \(range.length)")
-       // var query = textField.text?.replaceRange(0...1, with: string) modify this line of code
-        print(textField.text)
-        print(string)
-        if textField.text != "" {
-            searchResultVC.fetchSuggestions(textField.text!)
+        var text = textField.text!
+        
+        let startIndex = range.location
+        let endIndex = startIndex + range.length
+        
+        if range.length > 0{
+            let rangeToRemove = text.startIndex.advancedBy(startIndex)..<text.startIndex.advancedBy(endIndex)
+            text.removeRange(rangeToRemove)
+        } else {
+            text.insertContentsOf(string.characters, at: text.startIndex.advancedBy(range.location))
         }
+        
+        searchResultVC.fetchSuggestions(text)
+        
         return true
     }
 

@@ -87,21 +87,25 @@ class SearchResultTableViewController: UITableViewController {
     func fetchSuggestions(searchText: String)
     {
         let placesClient = GMSPlacesClient()
-//        let filter = GMSAutocompleteFilter()
-//        
-//        filter.type = .Address
-        placesClient.autocompleteQuery(searchText, bounds: nil, filter: nil) { [unowned self] (results, error:NSError?) -> Void in
-            self.suggestions.removeAll()
-            guard error == nil else {
-                print("Autocomplete error \(error)")
-                return
+        
+        if searchText != ""{
+            
+            placesClient.autocompleteQuery(searchText, bounds: nil, filter: nil) { [unowned self] (results, error:NSError?) -> Void in
+                self.suggestions.removeAll()
+                guard error == nil else {
+                    print("Autocomplete error \(error)")
+                    return
+                }
+                
+                for result in results!{
+                    self.suggestions.append(result.attributedFullText.string)
+                }
             }
             
-            for result in results!{
-                self.suggestions.append(result.attributedFullText.string)
-            }
-            
-            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Fade) // Moved from didSet method of suggestion array
+        } else {
+            suggestions.removeAll()
         }
+        
+        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Fade) // Moved from didSet method of suggestion array
     }
 }
