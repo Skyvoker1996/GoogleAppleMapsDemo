@@ -45,7 +45,7 @@ class SearchResultTableViewController: UITableViewController {
     
     var suggestions = [String](){
         didSet{
-           tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Fade)
+           
         }
     }
     override func didReceiveMemoryWarning() {
@@ -101,7 +101,7 @@ class SearchResultTableViewController: UITableViewController {
 //        let filter = GMSAutocompleteFilter()
 //        
 //        filter.type = .Address
-        placesClient.autocompleteQuery(searchText, bounds: nil, filter: nil) { (results, error:NSError?) -> Void in
+        placesClient.autocompleteQuery(searchText, bounds: nil, filter: nil) { [unowned self] (results, error:NSError?) -> Void in
             self.suggestions.removeAll()
             guard error == nil else {
                 print("Autocomplete error \(error)")
@@ -111,6 +111,8 @@ class SearchResultTableViewController: UITableViewController {
             for result in results!{
                 self.suggestions.append(result.attributedFullText.string)
             }
+            
+            self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Fade) // Moved from didSet method of suggestion array
         }
     }
     /*
