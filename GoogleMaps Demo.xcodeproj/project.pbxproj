@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0630D27E1D795C380002A2ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0630D27D1D795C380002A2ED /* AppDelegate.swift */; };
-		0630D2801D795C380002A2ED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0630D27F1D795C380002A2ED /* ViewController.swift */; };
+		0630D2801D795C380002A2ED /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0630D27F1D795C380002A2ED /* MainViewController.swift */; };
 		0630D2831D795C380002A2ED /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0630D2811D795C380002A2ED /* Main.storyboard */; };
 		0630D2851D795C380002A2ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0630D2841D795C380002A2ED /* Assets.xcassets */; };
 		0630D2881D795C390002A2ED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0630D2861D795C390002A2ED /* LaunchScreen.storyboard */; };
@@ -23,7 +23,7 @@
 /* Begin PBXFileReference section */
 		0630D27A1D795C380002A2ED /* GoogleMaps Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GoogleMaps Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0630D27D1D795C380002A2ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0630D27F1D795C380002A2ED /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		0630D27F1D795C380002A2ED /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		0630D2821D795C380002A2ED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0630D2841D795C380002A2ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0630D2871D795C390002A2ED /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -72,10 +72,9 @@
 			isa = PBXGroup;
 			children = (
 				0630D27D1D795C380002A2ED /* AppDelegate.swift */,
-				0630D27F1D795C380002A2ED /* ViewController.swift */,
+				0630D27F1D795C380002A2ED /* MainViewController.swift */,
 				06833AF91D8016BA00432EF5 /* SearchResultTableViewController.swift */,
-				84E785071D7B2268005990D3 /* CustomAnnotationView.swift */,
-				84E785091D7B242F005990D3 /* CustomAnnotation.swift */,
+				842AE50C1D8451BC00E9943D /* Annotation */,
 				06833AF41D7ED11A00432EF5 /* Model */,
 				84E785021D7B1CB4005990D3 /* Support */,
 			);
@@ -89,6 +88,15 @@
 				06833AF71D7ED2BF00432EF5 /* Geometry.swift */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		842AE50C1D8451BC00E9943D /* Annotation */ = {
+			isa = PBXGroup;
+			children = (
+				84E785071D7B2268005990D3 /* CustomAnnotationView.swift */,
+				84E785091D7B242F005990D3 /* CustomAnnotation.swift */,
+			);
+			name = Annotation;
 			sourceTree = "<group>";
 		};
 		84E785021D7B1CB4005990D3 /* Support */ = {
@@ -242,7 +250,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0630D2801D795C380002A2ED /* ViewController.swift in Sources */,
+				0630D2801D795C380002A2ED /* MainViewController.swift in Sources */,
 				06833AF81D7ED2BF00432EF5 /* Geometry.swift in Sources */,
 				84E785081D7B2268005990D3 /* CustomAnnotationView.swift in Sources */,
 				06833AF61D7ED18A00432EF5 /* AddressLocation.swift in Sources */,
@@ -380,6 +388,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = "GoogleMaps Demo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "MG.GoogleMaps-Demo";

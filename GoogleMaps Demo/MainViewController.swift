@@ -11,7 +11,7 @@ import GoogleMaps
 import MapKit
 
 
-class ViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
+class MainViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
     struct TextFieldIdentifiers {
         static let appleSearchTextField = "apple search"
